@@ -7,6 +7,17 @@ from pathlib import Path
 
 DB_PATH = Path(__file__).parent.parent / "data" / "trump_quotes.db"
 
+SPECIES_TOPIC_MAP = {
+    'golfer': ['golf', 'weekend', 'leisure'],
+    'executive_pen': ['policy', 'executive', 'order'],
+    'truth_social': ['media', 'social', 'post'],
+    'media_enemy': ['media', 'fake_news', 'press'],
+    'biden_hunter': ['biden', 'election', 'politics'],
+    'china_tariff': ['trade', 'china', 'economy'],
+    'election_stolen': ['election', 'politics'],
+    'self_contradiction': ['self', 'politics'],
+}
+
 def get_connection():
     """Get database connection."""
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -27,6 +38,9 @@ def init_db():
             topic TEXT
         )
     """)
+    # 添加索引优化查询性能
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_quotes_topic ON quotes(topic)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_quotes_quote ON quotes(quote)")
     conn.commit()
     conn.close()
 
@@ -79,6 +93,10 @@ def get_random_quotes(n: int = 10) -> list:
 
 def search_quotes(keyword: str, limit: int = 20) -> list:
     """Search quotes by keyword."""
+
+    if not keyword or not keyword.strip():
+        return []
+
     conn = get_connection()
     cursor = conn.execute(
         "SELECT * FROM quotes WHERE quote LIKE ? LIMIT ?",
@@ -95,6 +113,19 @@ def count_quotes() -> int:
     count = cursor.fetchone()[0]
     conn.close()
     return count
+
+def get_quotes_by_species(species: str, limit: int = 10) -> list:
+    """Get quotes by Trump species (mapped from topics)."""
+    topics = SPECIES_TOPIC_MAP.get(species, ['self'])
+    conn = get_connection()
+    placeholders = ','.join(['?'] * len(topics))
+    cursor = conn.execute(
+        f"SELECT * FROM quotes WHERE topic IN ({placeholders}) LIMIT ?",
+        (*topics, limit)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
 
 if __name__ == "__main__":
     init_db()

@@ -158,12 +158,34 @@ Trump-skill/
 │   └── persona_analyzer.md  # 语料分析流程
 ├── tools/
 │   ├── quote_db.py       # 语录数据库
-│   └── scraper.py        # 语录收集脚本
+│   ├── scraper.py        # 语录收集脚本
+│   ├── species_detector.py  # Species检测
+│   └── trump_sprites.py    # ASCII图案
 ├── data/
-│   └── trump_quotes.db   # SQLite 语录库
+│   ├── trump_quotes.db   # SQLite 语录库
+│   └── trump_sprites.json  # ASCII 图案数据
 ├── requirements.txt
 └── README.md
 ```
+
+---
+
+## Trump Species 系统
+
+每个会话根据 **用户消息 + 时间** 的哈希值确定一种 Trump 角色。
+
+### 8种 Species
+
+| # | Species | 描述 |
+|---|---------|------|
+| 1 | Golfer Trump | 永远在打高尔夫球 |
+| 2 | Executive Pen Trump | 疯狂签署行政令 |
+| 3 | Truth Social Trump | 在真相社交上发帖 |
+| 4 | Media Enemy Trump | 把所有媒体都称为人民公敌 |
+| 5 | Biden Hunter Trump | 攻击拜登和亨特 |
+| 6 | China Tariff Trump | 关税大棒 |
+| 7 | Election Stolen Trump | 说选举被偷了 |
+| 8 | Self-Contradiction Trump | 自相矛盾 |
 
 ---
 

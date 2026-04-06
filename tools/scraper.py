@@ -3,7 +3,8 @@ Web scraper to collect Trump quotes.
 Uses Tavily MCP for web search to find Trump quotes.
 """
 import sys
-sys.path.insert(0, str(__file__).rsplit('/', 2)[0])
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from tools.quote_db import add_quotes, init_db, count_quotes
 from datetime import datetime
 
